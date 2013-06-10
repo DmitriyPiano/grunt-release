@@ -68,10 +68,18 @@ You can disable any of the steps if you want, by adding this to your Gruntfile:
       push: false, //default: true
       pushTags: false, //default: true
       npm: false, //default: true
-      folder: 'folder/to/publish/to/npm' //default project root
+      folder: 'folder/to/publish/to/npm', //default project root
       tagName: 'some-tag-<%= version %>', //default: '<%= version %>'
       commitMessage: 'check out my release <%= version %>', //default: 'release <%= version %>'
-      tagMessage: 'tagging version <%= version %>' //default: 'Version <%= version %>'
+      tagMessage: 'tagging version <%= version %>', //default: 'Version <%= version %>'
+      customTasks: [
+        {
+          files: ['someFile.txt'], //array of files the process function should be used to
+          process: function(content, oldVersion, newVersion) { //gets the actual file content, old and new version number
+            return content.replace(oldVersion, newVersion);//the return value of the function is written as new file content
+          }
+        }
+      ]
     }
   }
 ```

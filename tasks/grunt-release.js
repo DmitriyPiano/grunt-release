@@ -34,8 +34,11 @@ module.exports = function(grunt){
       }
     };
 
+    var filesToCommit = [];
+
     if (options.bump) bump(config);
-    if (options.add) add(config);
+    if (options.add) add(config.file);
+    if (options.customTasks) customTasks(options.customTasks, config);
     if (options.commit) commit(config);
     if (options.tag) tag(config);
     if (options.push) push();
@@ -45,19 +48,20 @@ module.exports = function(grunt){
     function setup(file, type){
       var pkg = grunt.file.readJSON(file);
       var newVersion = pkg.version;
+      var oldVersion = pkg.version;
       if (options.bump) {
         newVersion = semver.inc(pkg.version, type || 'patch');
       }
-      return {file: file, pkg: pkg, newVersion: newVersion};
+      return {file: file, pkg: pkg, newVersion: newVersion, oldVersion: oldVersion};
     }
 
-    function add(config){
-      run('git add ' + config.file);
+    function add(file) {
+      run('git add ' + file);
     }
 
-    function commit(config){
+    function commit(){
       var message = grunt.template.process(commitMessage, templateOptions);
-      run('git commit '+ config.file +' -m "'+ message +'"', config.file + ' committed');
+      run('git commit ' + filesToCommit.join(' ') + ' -m "' + message + '"', filesToCommit.join(', ') + ' committed');
     }
 
     function tag(config){
@@ -88,7 +92,24 @@ module.exports = function(grunt){
     function bump(config){
       config.pkg.version = config.newVersion;
       grunt.file.write(config.file, JSON.stringify(config.pkg, null, '  ') + '\n');
+      filesToCommit.push(config.file);
       grunt.log.ok('Version bumped to ' + config.newVersion);
+    }
+
+    function customTasks(customTasks, config) {
+
+      customTasks.forEach(function(task) {
+        var files = task.files;
+        var func = task.process;
+
+        files.forEach(function(file) {
+          var fileContent = grunt.file.read(file);
+          var newFileConent = func(fileContent, config.oldVersion, config.newVersion);
+          grunt.file.write(file, newFileConent);
+          add(file);
+          filesToCommit.push(file);
+        })
+      });
     }
 
   });
