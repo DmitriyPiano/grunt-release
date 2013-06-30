@@ -14,7 +14,6 @@
     "gruntplugin",
     "bump",
     "release",
-    "npm",
     "git"
   ],
   "author": "Dave Geddes",
@@ -26,7 +25,7 @@
   "devDependencies": {
     "grunt": "~0.4.0",
     "grunt-contrib-clean": "~0.4.0",
-    "grunt-contrib-nodeunit": "~0.1.2"
+    "buster": "~0.6.12"
   },
   "peerDependencies": {
     "grunt": "~0.4.1"

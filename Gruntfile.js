@@ -9,8 +9,8 @@ module.exports = function(grunt) {
     release: {
       options: {
         bump: true,
-        file: 'test/fixtures/_component.json',
-        add: false,
+//        file: 'test/fixtures/_component.json',
+        add: false, 
         commit: false,
         tag: false,
         push: false,
