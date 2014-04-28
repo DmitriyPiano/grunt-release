@@ -6,7 +6,7 @@ module.exports = {
   bump: function(config) {
     var newVersion = semver.inc(config.pkg.version, config.type);
     config.pkg.version = newVersion;
-    config.templateOptions.data.version = newVersion;
+    //config.templateOptions.data.version = newVersion;
     grunt.file.write(config.file, JSON.stringify(config.pkg, null, '  ') + '\n');
     config.filesToCommit.push(config.file);
     return {
